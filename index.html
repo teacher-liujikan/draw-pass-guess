@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>傳情畫意畫本</title>
+<title>draw-pass-guess</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -13,7 +13,7 @@
 :root{
   --cover:#2a4bb0; --cover-deep:#1b3484;
   --paper:#fdfdfa; --ink:#1b2130; --muted:#66708a; --line:#e3e7f0;
-  --marker:#ffd84a; --marker-soft:#fff3b8; --alert:#d9443a; --wire:#c7ccd8;
+  --marker:#ffd84a; --marker-soft:#fff3b8; --alert:#d9443a; --wire:#9aa1b2;
   --hand:"LXGW WenKai TC","Kaiti TC","STKaiti","DFKai-SB",serif;
   --body:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;
   color-scheme:light;
@@ -25,7 +25,13 @@ body{
   padding-left:max(16px, env(safe-area-inset-left, 0px));
   padding-right:max(16px, env(safe-area-inset-right, 0px));
   padding-block:10px 14px; overflow:hidden;
-  background-image:radial-gradient(circle at 20% 0%, rgba(255,255,255,.08), transparent 60%);
+  background-color:#f6f7f3;
+  background-image:
+    linear-gradient(rgba(42,75,176,.16) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(42,75,176,.16) 1px, transparent 1px),
+    linear-gradient(rgba(42,75,176,.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(42,75,176,.07) 1px, transparent 1px);
+  background-size:100px 100px,100px 100px,20px 20px,20px 20px;
 }
 button,input{font:inherit;color:inherit}
 button{cursor:pointer}
@@ -34,11 +40,11 @@ button{cursor:pointer}
 .book{
   position:relative;flex:1;min-height:0;margin-top:18px;background:var(--paper);
   border-radius:4px 4px 16px 16px;display:flex;flex-direction:column;
-  box-shadow:0 3px 0 #e9ebf0,0 6px 0 #d6dae4,0 8px 0 var(--cover-deep),0 18px 36px rgba(0,0,0,.28);
+  border:2px solid var(--ink);box-shadow:0 3px 0 #e9ebf0,0 6px 0 #d6dae4,0 8px 0 var(--ink),0 14px 28px rgba(27,33,48,.16);
 }
 .rings{position:absolute;top:-18px;left:18px;right:18px;height:34px;display:flex;justify-content:space-between;overflow:hidden;pointer-events:none;z-index:3}
 .rings span{flex:0 0 auto;width:12px;height:34px;position:relative}
-.rings span::before{content:"";position:absolute;left:2px;top:22px;width:8px;height:8px;border-radius:50%;background:var(--cover-deep)}
+.rings span::before{content:"";position:absolute;left:2px;top:22px;width:8px;height:8px;border-radius:50%;background:var(--ink)}
 .rings span::after{content:"";position:absolute;left:1px;top:0;width:10px;height:27px;border:3px solid var(--wire);border-bottom-color:transparent;border-radius:6px 6px 3px 3px}
 .screen{flex:1;min-height:0;display:flex;flex-direction:column;padding:26px 24px 18px}
 .screen.flip{animation:flip .42s cubic-bezier(.2,.7,.2,1);transform-origin:50% 0}
@@ -54,7 +60,14 @@ h1,h2,.hand{font-family:var(--hand);text-wrap:balance}
 /* setup */
 .setup-head{display:flex;align-items:baseline;gap:16px;flex-wrap:wrap;border-bottom:2px dashed var(--line);padding-bottom:14px;margin-bottom:20px}
 .setup-head h1{font-size:44px;margin:0;line-height:1.1}
-.setup-head p{margin:0;color:var(--muted)}
+.setup-head p{margin:0;color:var(--muted);flex:1;min-width:12em}
+.qr{margin-left:auto;align-self:flex-start;display:flex;flex-direction:column;align-items:center;gap:4px;border:2px solid var(--ink);background:#fff;border-radius:10px;padding:6px 6px 4px;font-size:12px;color:var(--muted)}
+.qr canvas,.qr img{width:76px!important;height:76px!important;border:none;border-radius:0;display:block}
+.qr-over{position:fixed;inset:0;z-index:20;background:rgba(18,26,56,.82);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:24px;text-align:center;color:#fff}
+.qr-big{background:#fff;padding:18px;border-radius:16px}
+.qr-big canvas,.qr-big img{width:min(70vw,60vh,360px)!important;height:auto!important;aspect-ratio:1;display:block;border:none;border-radius:0}
+.qr-over p{margin:0;font-size:18px}
+.qr-over code{font-size:14px;word-break:break-all;max-width:32em;opacity:.85}
 .setup-grid{display:grid;grid-template-columns:1fr 1fr;gap:28px}
 @media (max-width:760px){.setup-grid{grid-template-columns:1fr}}
 .col{display:flex;flex-direction:column;gap:22px;min-width:0}
@@ -165,8 +178,9 @@ canvas{display:block;background:#fff;border:2px solid var(--line);border-radius:
           <button class="ghost" id="resumeBtn">繼續那一本</button>
         </div>
         <header class="setup-head">
-          <h1>傳情畫意</h1>
+          <h1>draw-pass-guess</h1>
           <p>這台平板就是一本畫本：抽題目、畫畫、猜答案，一頁一頁傳下去。</p>
+          <button class="qr" id="qrBtn" aria-label="放大這個頁面的 QR Code"><div id="qrSmall"></div><span>掃描開啟</span></button>
         </header>
         <div class="setup-grid">
           <div class="col">
@@ -268,6 +282,14 @@ canvas{display:block;background:#fff;border:2px solid var(--line);border-radius:
   </div>
 </div>
 
+<div class="qr-over" id="qrOver" hidden>
+  <div class="qr-big" id="qrBig"></div>
+  <p>其他玩家用手機或平板掃描，就能打開自己的畫本</p>
+  <code id="qrUrl"></code>
+  <button class="ghost" id="qrClose">關閉</button>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script>
 const WORDS = {
   "動物":{
@@ -583,6 +605,19 @@ $("homeBtn").onclick=$("againBtn").onclick;
 /* ---------- wake lock ---------- */
 async function requestWake(){ try{ if(navigator.wakeLock) await navigator.wakeLock.request("screen"); }catch(e){} }
 document.addEventListener("visibilitychange",()=>{ if(document.visibilityState==="visible" && S.screen!=="setup") requestWake(); });
+
+/* ---------- QR code ---------- */
+(function qr(){
+  const url = location.href.split("#")[0];
+  $("qrUrl").textContent = url;
+  if(typeof QRCode==="undefined"){ $("qrBtn").hidden=true; return; }
+  const opt = t => ({text:url,width:t,height:t,colorDark:"#1b2130",colorLight:"#ffffff",correctLevel:QRCode.CorrectLevel.M});
+  new QRCode($("qrSmall"), opt(256));
+  let big=false;
+  $("qrBtn").onclick=()=>{ if(!big){ new QRCode($("qrBig"), opt(720)); big=true; } $("qrOver").hidden=false; };
+  $("qrClose").onclick=()=>{ $("qrOver").hidden=true; };
+  $("qrOver").onclick=e=>{ if(e.target.id==="qrOver") $("qrOver").hidden=true; };
+})();
 
 /* ---------- boot ---------- */
 (function boot(){
