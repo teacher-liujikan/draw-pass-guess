@@ -1,0 +1,601 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>傳情畫意畫本</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+TC:wght@400;700&family=Noto+Sans+TC:wght@400;500;700&display=swap">
+<style>
+/* Layout: one tablet = one spiral sketchbook on a cobalt cover; each screen is a page that flips up from the rings. */
+:root{
+  --cover:#2a4bb0; --cover-deep:#1b3484;
+  --paper:#fdfdfa; --ink:#1b2130; --muted:#66708a; --line:#e3e7f0;
+  --marker:#ffd84a; --marker-soft:#fff3b8; --alert:#d9443a; --wire:#c7ccd8;
+  --hand:"LXGW WenKai TC","Kaiti TC","STKaiti","DFKai-SB",serif;
+  --body:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  background:var(--cover); color:var(--ink); font-family:var(--body); font-size:16px;
+  padding-left:max(16px, env(safe-area-inset-left, 0px));
+  padding-right:max(16px, env(safe-area-inset-right, 0px));
+  padding-block:10px 14px; overflow:hidden;
+  background-image:radial-gradient(circle at 20% 0%, rgba(255,255,255,.08), transparent 60%);
+}
+button,input{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--marker);outline-offset:2px}
+#app{height:100%;max-width:1280px;margin:0 auto;display:flex;flex-direction:column}
+.book{
+  position:relative;flex:1;min-height:0;margin-top:18px;background:var(--paper);
+  border-radius:4px 4px 16px 16px;display:flex;flex-direction:column;
+  box-shadow:0 3px 0 #e9ebf0,0 6px 0 #d6dae4,0 8px 0 var(--cover-deep),0 18px 36px rgba(0,0,0,.28);
+}
+.rings{position:absolute;top:-18px;left:18px;right:18px;height:34px;display:flex;justify-content:space-between;overflow:hidden;pointer-events:none;z-index:3}
+.rings span{flex:0 0 auto;width:12px;height:34px;position:relative}
+.rings span::before{content:"";position:absolute;left:2px;top:22px;width:8px;height:8px;border-radius:50%;background:var(--cover-deep)}
+.rings span::after{content:"";position:absolute;left:1px;top:0;width:10px;height:27px;border:3px solid var(--wire);border-bottom-color:transparent;border-radius:6px 6px 3px 3px}
+.screen{flex:1;min-height:0;display:flex;flex-direction:column;padding:26px 24px 18px}
+.screen.flip{animation:flip .42s cubic-bezier(.2,.7,.2,1);transform-origin:50% 0}
+@keyframes flip{from{transform:perspective(1400px) rotateX(-62deg);opacity:.3}to{transform:none;opacity:1}}
+@media (prefers-reduced-motion:reduce){.screen.flip{animation:none}}
+.scroll{flex:1;min-height:0;overflow:auto;margin:0 -8px;padding:0 8px}
+
+h1,h2,.hand{font-family:var(--hand);text-wrap:balance}
+.label{font-size:13px;letter-spacing:.12em;color:var(--muted);font-weight:500;margin-bottom:8px;display:block}
+.hint{font-size:14px;color:var(--muted);margin:8px 0 0;line-height:1.6}
+.hl{background:linear-gradient(transparent 55%,var(--marker) 55%);padding:0 .15em}
+
+/* setup */
+.setup-head{display:flex;align-items:baseline;gap:16px;flex-wrap:wrap;border-bottom:2px dashed var(--line);padding-bottom:14px;margin-bottom:20px}
+.setup-head h1{font-size:44px;margin:0;line-height:1.1}
+.setup-head p{margin:0;color:var(--muted)}
+.setup-grid{display:grid;grid-template-columns:1fr 1fr;gap:28px}
+@media (max-width:760px){.setup-grid{grid-template-columns:1fr}}
+.col{display:flex;flex-direction:column;gap:22px;min-width:0}
+.stepper{display:flex;align-items:center;gap:14px}
+.stepper button{width:56px;height:56px;border-radius:50%;border:2px solid var(--ink);background:var(--paper);font-size:28px;line-height:1}
+.stepper output{font-family:var(--hand);font-size:52px;min-width:2ch;text-align:center;font-variant-numeric:tabular-nums;font-weight:700}
+.stepper small{color:var(--muted)}
+#owner{width:100%;max-width:340px;border:none;border-bottom:2px solid var(--ink);background:transparent;padding:8px 2px;font-size:20px;font-family:var(--hand)}
+#owner:focus{outline:none;border-bottom-color:var(--cover)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:2px solid var(--line);background:var(--paper);padding:9px 16px;border-radius:999px;font-size:16px;min-height:44px}
+.chip[aria-pressed="true"]{border-color:var(--ink);background:var(--ink);color:var(--paper)}
+.order{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
+.order i{font-style:normal;font-size:12px;padding:3px 8px;border-radius:4px;background:var(--line);color:var(--ink)}
+.order i.d{background:var(--marker-soft)}
+
+.card{border:2px solid var(--ink);border-radius:14px;padding:18px 18px 16px;background:var(--paper);box-shadow:6px 6px 0 var(--marker)}
+.card-top{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-bottom:10px}
+.card-top h2{margin:0;font-size:24px}
+.card-top span{font-size:13px;color:var(--muted)}
+.words{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.words button{width:100%;display:flex;align-items:center;gap:14px;text-align:left;border:none;background:transparent;padding:8px 10px;border-radius:8px;font-family:var(--hand);font-size:24px;min-height:48px}
+.words button b{font-family:var(--body);font-size:14px;width:28px;height:28px;border-radius:6px;border:2px solid var(--ink);display:grid;place-items:center;flex:none}
+.words button[aria-pressed="true"]{background:var(--marker)}
+.words button[aria-pressed="true"] b{background:var(--ink);color:var(--marker)}
+.card-actions{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap}
+.ghost{border:2px solid var(--ink);background:var(--paper);border-radius:10px;padding:10px 16px;min-height:46px;font-size:16px}
+.primary{border:none;background:var(--cover);color:#fff;border-radius:12px;padding:16px 26px;font-size:19px;font-weight:700;min-height:58px;box-shadow:0 4px 0 var(--cover-deep)}
+.primary:active{transform:translateY(2px);box-shadow:0 2px 0 var(--cover-deep)}
+.primary:disabled{background:#b7bfd3;box-shadow:none;cursor:not-allowed}
+.die{display:inline-block;transition:transform .5s}
+.die.roll{transform:rotate(720deg)}
+.resume{display:flex;gap:12px;align-items:center;flex-wrap:wrap;background:var(--marker-soft);border-radius:10px;padding:10px 14px;margin-bottom:16px;font-size:15px}
+
+/* pass */
+.center{align-items:center;justify-content:center;text-align:center;gap:18px}
+.center h2{font-size:clamp(34px,6vw,60px);margin:0;line-height:1.2}
+.center p{margin:0;color:var(--muted);font-size:18px;max-width:30em;line-height:1.7}
+.big-hand{font-family:var(--hand);font-size:clamp(28px,4vw,40px);color:var(--ink)!important}
+.dots{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.dots i{width:30px;height:30px;border-radius:50%;border:2px solid var(--ink);display:grid;place-items:center;font-style:normal;font-size:13px}
+.dots i.done{background:var(--ink);color:var(--paper)}
+.dots i.now{background:var(--marker)}
+
+/* page */
+.pagebar{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:12px}
+.pg{display:flex;align-items:center;gap:10px;font-variant-numeric:tabular-nums;color:var(--muted);font-size:15px}
+.badge{font-size:14px;padding:4px 10px;border-radius:6px;background:var(--ink);color:var(--paper);font-weight:500}
+.prompt{flex:1;min-width:0;font-family:var(--hand);font-size:clamp(22px,3vw,32px);text-align:center}
+.prompt .hl{font-weight:700}
+.timer{font-variant-numeric:tabular-nums;font-size:22px;font-weight:700;min-width:4.5ch;text-align:right}
+.timer.warn{color:#c77700}.timer.over{color:var(--alert)}
+.pagebody{flex:1;min-height:0;display:flex;flex-direction:column;gap:12px}
+.board-wrap{flex:1;min-height:0;display:grid;place-items:center}
+canvas{display:block;background:#fff;border:2px solid var(--line);border-radius:10px;touch-action:none;cursor:crosshair}
+.tools{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:center}
+.sep{width:1px;height:32px;background:var(--line)}
+.sw{width:42px;height:42px;border-radius:50%;border:3px solid var(--paper);box-shadow:0 0 0 2px var(--line)}
+.sw[aria-pressed="true"]{box-shadow:0 0 0 3px var(--ink)}
+.sz{width:46px;height:46px;border-radius:10px;border:2px solid var(--line);background:var(--paper);display:grid;place-items:center}
+.sz i{display:block;border-radius:50%;background:var(--ink)}
+.sz[aria-pressed="true"],.tool[aria-pressed="true"]{border-color:var(--ink);background:var(--marker-soft)}
+.tool{height:46px;padding:0 14px;border-radius:10px;border:2px solid var(--line);background:var(--paper);font-size:15px}
+.tool.danger{color:var(--alert)}
+.guess{flex-direction:row}
+.prev-wrap{flex:3;min-width:0;min-height:0;display:grid;place-items:center}
+.prev-wrap img{max-width:100%;max-height:100%;border:2px solid var(--line);border-radius:10px;background:#fff}
+.answer{flex:2;min-width:0;display:flex;flex-direction:column;justify-content:center;gap:10px;padding:0 6px}
+.answer label{font-size:18px;font-weight:500}
+#guessInput{width:100%;font-family:var(--hand);font-size:34px;border:none;border-bottom:3px solid var(--ink);background:repeating-linear-gradient(transparent 0 46px,var(--line) 46px 48px);padding:6px 4px;border-radius:0}
+#guessInput:focus{outline:none;border-bottom-color:var(--cover)}
+@media (orientation:portrait),(max-width:760px){.guess{flex-direction:column}.prev-wrap{flex:1}.answer{flex:none;padding:0}}
+.titlepage{align-items:center;justify-content:center;text-align:center;gap:14px}
+.titlepage .word{font-family:var(--hand);font-size:clamp(48px,9vw,96px);font-weight:700}
+.titlepage p{color:var(--muted);margin:0;font-size:17px;max-width:28em;line-height:1.7}
+.pagefoot{display:flex;justify-content:flex-end;align-items:center;gap:14px;margin-top:12px;flex-wrap:wrap}
+.pagefoot .hint{margin:0;margin-right:auto}
+
+/* reveal */
+.rv-head{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:10px}
+.rv-head h2{margin:0;font-size:30px}
+.rv-head span{color:var(--muted);font-variant-numeric:tabular-nums}
+.slide{flex:1;min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;touch-action:pan-y;user-select:none}
+.slide .who{font-size:15px;color:var(--muted);letter-spacing:.06em}
+.slide img{max-width:100%;flex:1;min-height:0;object-fit:contain;border:2px solid var(--line);border-radius:10px;background:#fff}
+.slide .txt{font-family:var(--hand);font-size:clamp(46px,8vw,90px);font-weight:700;text-align:center;line-height:1.2;overflow-wrap:anywhere}
+.chain{display:flex;align-items:center;gap:18px;flex-wrap:wrap;justify-content:center;font-family:var(--hand);font-size:clamp(30px,5vw,56px)}
+.chain em{font-style:normal;font-size:.6em;color:var(--muted)}
+.rv-foot{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:12px}
+.rv-foot .grow{flex:1}
+.strip{display:flex;gap:6px;overflow-x:auto;padding:4px 0;margin-top:8px}
+.strip button{flex:none;width:58px;height:44px;border:2px solid var(--line);border-radius:6px;background:#fff;padding:0;overflow:hidden;font-family:var(--hand);font-size:13px}
+.strip button img{width:100%;height:100%;object-fit:cover}
+.strip button[aria-current="true"]{border-color:var(--ink);box-shadow:0 0 0 2px var(--marker)}
+@media (max-width:520px){.screen{padding:24px 14px 14px}.setup-head h1{font-size:36px}}
+</style>
+</head>
+<body>
+
+<div id="app">
+  <div class="book">
+    <div class="rings" id="rings"></div>
+
+    <section class="screen" id="sSetup">
+      <div class="scroll">
+        <div class="resume" id="resumeBar" hidden>
+          <span>上一本還沒傳完。</span>
+          <button class="ghost" id="resumeBtn">繼續那一本</button>
+        </div>
+        <header class="setup-head">
+          <h1>傳情畫意</h1>
+          <p>這台平板就是一本畫本：抽題目、畫畫、猜答案，一頁一頁傳下去。</p>
+        </header>
+        <div class="setup-grid">
+          <div class="col">
+            <div>
+              <span class="label">玩家人數</span>
+              <div class="stepper">
+                <button id="minus" aria-label="減少人數">−</button>
+                <output id="count" aria-live="polite">6</output>
+                <button id="plus" aria-label="增加人數">＋</button>
+                <small>人（3–12）</small>
+              </div>
+              <p class="hint" id="orderHint"></p>
+              <div class="order" id="orderPreview"></div>
+            </div>
+            <div>
+              <label class="label" for="owner">本子主人</label>
+              <input id="owner" maxlength="12" placeholder="你的名字（可不填）" autocomplete="off">
+            </div>
+            <div><span class="label">難度</span><div class="chips" id="diffChips"></div></div>
+            <div><span class="label">種類</span><div class="chips" id="catChips"></div></div>
+            <div><span class="label">每頁時間</span><div class="chips" id="timeChips"></div></div>
+          </div>
+          <div class="col">
+            <div class="card">
+              <div class="card-top"><h2>題目卡</h2><span id="cardMeta"></span></div>
+              <ol class="words" id="words"></ol>
+              <div class="card-actions">
+                <button class="ghost" id="rollBtn"><span class="die" id="die">🎲</span> 擲骰子選題</button>
+                <button class="ghost" id="newCardBtn">換一張卡</button>
+              </div>
+              <p class="hint">擲骰子或直接點一個題目。題目只有你看得到。</p>
+            </div>
+            <button class="primary" id="startBtn" disabled>先選一個題目</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="screen center" id="sPass" hidden>
+      <div class="dots" id="passDots"></div>
+      <h2 id="passTitle"></h2>
+      <p id="passText"></p>
+      <button class="primary" id="passBtn"></button>
+    </section>
+
+    <section class="screen" id="sPage" hidden>
+      <div class="pagebar">
+        <div class="pg"><span id="pgNum"></span><span class="badge" id="pgType"></span></div>
+        <div class="prompt" id="prompt"></div>
+        <div class="timer" id="timer"></div>
+      </div>
+
+      <div class="pagebody" id="drawBody">
+        <div class="board-wrap" id="boardWrap"><canvas id="cv" width="1200" height="900" aria-label="畫布"></canvas></div>
+        <div class="tools" id="tools">
+          <div class="chips" id="swatches"></div>
+          <span class="sep"></span>
+          <div class="chips" id="sizes"></div>
+          <span class="sep"></span>
+          <button class="tool" id="eraserBtn" aria-pressed="false">橡皮擦</button>
+          <button class="tool" id="undoBtn">復原</button>
+          <button class="tool danger" id="clearBtn">清除</button>
+        </div>
+      </div>
+
+      <div class="pagebody guess" id="guessBody">
+        <div class="prev-wrap"><img id="prevImg" alt="上一位玩家畫的圖"></div>
+        <div class="answer">
+          <label for="guessInput">你覺得這張圖是什麼？</label>
+          <input id="guessInput" maxlength="20" autocomplete="off" placeholder="寫下你的答案">
+          <p class="hint">寫完就翻頁，下一位只會看到你寫的字。</p>
+        </div>
+      </div>
+
+      <div class="pagebody titlepage" id="titleBody">
+        <span class="label">第一頁 · 題目</span>
+        <div class="word" id="titleWord"></div>
+        <p>人數是單數，所以第一頁先寫題目。翻頁後交給下一位，他會照著這個題目畫畫。</p>
+      </div>
+
+      <div class="pagefoot">
+        <p class="hint" id="footHint"></p>
+        <button class="primary" id="doneBtn">完成，翻頁</button>
+      </div>
+    </section>
+
+    <section class="screen" id="sReveal" hidden>
+      <div class="rv-head"><h2 id="rvTitle">大公開</h2><span id="rvCount"></span></div>
+      <div class="slide" id="slide"></div>
+      <div class="strip" id="strip"></div>
+      <div class="rv-foot">
+        <button class="ghost" id="prevBtn">上一頁</button>
+        <button class="primary" id="nextBtn">下一頁</button>
+        <span class="grow"></span>
+        <button class="ghost" id="againBtn">再玩一輪</button>
+        <button class="ghost" id="homeBtn">回到設定</button>
+      </div>
+    </section>
+  </div>
+</div>
+
+<script>
+const WORDS = {
+  "動物":{
+    easy:["貓","狗","魚","兔子","長頸鹿","大象","蛇","小鳥","烏龜","豬","蝴蝶","青蛙"],
+    normal:["企鵝","章魚","刺蝟","袋鼠","變色龍","螃蟹","貓頭鷹","孔雀","蝸牛","水母","樹懶","河馬"],
+    hard:["穿山甲","寄居蟹","啄木鳥","海馬","食蟻獸","獨角仙","鴨嘴獸","螢火蟲","石虎","招潮蟹"]},
+  "食物":{
+    easy:["蘋果","香蕉","西瓜","冰淇淋","披薩","漢堡","蛋糕","雞蛋","甜甜圈","薯條","葡萄","熱狗"],
+    normal:["壽司","爆米花","小籠包","鳳梨","棉花糖","三明治","拉麵","荷包蛋","糖葫蘆","鬆餅","粽子","玉米"],
+    hard:["壽喜燒","千層蛋糕","法式吐司","舒芙蕾","馬卡龍","提拉米蘇","墨西哥捲餅","蛋塔","生魚片","臘腸"]},
+  "日常用品":{
+    easy:["雨傘","牙刷","眼鏡","時鐘","剪刀","椅子","杯子","鑰匙","書","床","帽子","襪子"],
+    normal:["吹風機","遙控器","行李箱","電風扇","鬧鐘","衣架","拖鞋","檯燈","錢包","耳機","馬桶","吸塵器"],
+    hard:["延長線","指甲剪","保溫瓶","曬衣夾","捕蚊燈","電子鍋","釘書機","體重計","滅火器","印表機"]},
+  "動作":{
+    easy:["跑步","睡覺","游泳","哭","笑","跳舞","吃飯","洗澡","唱歌","釣魚"],
+    normal:["打噴嚏","放風箏","溜冰","打瞌睡","自拍","盪鞦韆","爬山","跳繩","刷牙","打保齡球"],
+    hard:["落枕","打嗝","迷路","塞車","排隊","失眠","搬家","減肥","加班","暈車"]},
+  "職業人物":{
+    easy:["醫生","警察","老師","廚師","消防員","農夫","小丑","國王"],
+    normal:["太空人","魔術師","海盜","外送員","牙醫","理髮師","指揮家","救生員","忍者","偵探"],
+    hard:["網紅","拳擊手","考古學家","腹語師","調酒師","氣象主播","潛水員","馴獸師","吸血鬼","美人魚"]},
+  "地點場景":{
+    easy:["海灘","學校","醫院","公園","城堡","沙漠","火山","動物園"],
+    normal:["遊樂園","機場","電影院","圖書館","超市","加油站","健身房","便利商店","露營","溫泉"],
+    hard:["週年慶","太空站","鬼屋","婚禮","畢業典禮","動物醫院","演唱會","颱風天","停電","跨年"]},
+  "台灣在地":{
+    easy:["珍珠奶茶","台北101","機車","鳳梨酥","廟","夜市","鹽酥雞","紅綠燈"],
+    normal:["垃圾車","媽祖遶境","天燈","捷運","刮刮樂","早餐店","統一發票","手搖飲","便當","中秋烤肉"],
+    hard:["夾娃娃機","颱風假","補習班","謝師宴","熱炒店","機車待轉","收驚","擲筊","蚵仔煎","搶頭香"]},
+  "成語俗語":{
+    easy:["一石二鳥","畫蛇添足","對牛彈琴","守株待兔","井底之蛙","狐假虎威"],
+    normal:["雞飛狗跳","亡羊補牢","杯弓蛇影","掩耳盜鈴","打草驚蛇","如魚得水","盲人摸象","對症下藥"],
+    hard:["熱鍋上的螞蟻","竹籃打水一場空","臨時抱佛腳","三人成虎","望梅止渴","半斤八兩","雪中送炭","騎虎難下"]}
+};
+const CATS = ["隨機", ...Object.keys(WORDS)];
+const DIFFS = [["easy","簡單"],["normal","普通"],["hard","困難"],["mix","混合"]];
+const TIMES = [[0,"不限時"],[60,"60 秒"],[90,"90 秒"],[120,"120 秒"]];
+const COLORS = ["#1b2130","#d9443a","#2a6fdb","#2f9e57","#f08a24","#8a5a3c","#e85d9e"];
+const SIZES = [4,9,18,34];
+const KEY = "telestrations-tablet-v1";
+
+const $ = id => document.getElementById(id);
+let S = {
+  screen:"setup", players:6, owner:"", diff:"normal", cat:"隨機", time:0,
+  card:[], pick:-1, word:"", pages:[], cur:0, startedAt:0, draft:null, rv:0
+};
+
+function load(){ try{ const raw = localStorage.getItem(KEY); if(raw) return JSON.parse(raw);}catch(e){} return null; }
+function save(){ try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){} }
+
+/* rings */
+(function(){ const r=$("rings"); for(let i=0;i<44;i++) r.appendChild(document.createElement("span")); })();
+
+/* ---------- setup ---------- */
+function makeChips(el, items, getVal, setVal){
+  el.innerHTML="";
+  items.forEach(([v,l])=>{
+    const b=document.createElement("button"); b.className="chip"; b.textContent=l;
+    b.setAttribute("aria-pressed", String(getVal()===v));
+    b.onclick=()=>{ setVal(v); [...el.children].forEach(c=>c.setAttribute("aria-pressed","false")); b.setAttribute("aria-pressed","true"); save(); };
+    el.appendChild(b);
+  });
+}
+function pageTypes(n){
+  const t=[];
+  for(let i=0;i<n;i++){
+    if(n%2===0) t.push(i%2===0?"draw":"guess");
+    else t.push(i===0?"title":(i%2===1?"draw":"guess"));
+  }
+  return t;
+}
+function renderCount(){
+  const n=S.players; $("count").textContent=n;
+  $("orderHint").innerHTML = n%2===0
+    ? `<span class="hl">${n} 人是雙數</span>：一開始<b>先畫畫</b>，最後一頁是猜答案。`
+    : `<span class="hl">${n} 人是單數</span>：一開始<b>先寫題目</b>，再傳給下一位畫，最後一頁是猜答案。`;
+  const lab={title:"題目",draw:"畫",guess:"寫"};
+  $("orderPreview").innerHTML = pageTypes(n).map((t,i)=>`<i class="${t==='draw'?'d':''}">${i+1} ${lab[t]}</i>`).join("");
+}
+function pool(){
+  const cats = S.cat==="隨機"?Object.keys(WORDS):[S.cat];
+  const diffs = S.diff==="mix"?["easy","normal","hard"]:[S.diff];
+  const out=[]; cats.forEach(c=>diffs.forEach(d=>WORDS[c][d].forEach(w=>{ if(!out.includes(w)) out.push(w); })));
+  return out;
+}
+function newCard(){
+  const p=pool().slice(); for(let i=p.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[p[i],p[j]]=[p[j],p[i]];}
+  S.card=p.slice(0,6); S.pick=-1; renderCard(); save();
+}
+function renderCard(){
+  const dl = DIFFS.find(d=>d[0]===S.diff)[1];
+  $("cardMeta").textContent = `${S.cat} · ${dl}`;
+  const ol=$("words"); ol.innerHTML="";
+  S.card.forEach((w,i)=>{
+    const li=document.createElement("li"); const b=document.createElement("button");
+    b.innerHTML=`<b>${i+1}</b><span></span>`; b.lastChild.textContent=w;
+    b.setAttribute("aria-pressed", String(S.pick===i));
+    b.onclick=()=>{ S.pick=i; renderCard(); save(); };
+    li.appendChild(b); ol.appendChild(li);
+  });
+  const sb=$("startBtn"); sb.disabled = S.pick<0;
+  sb.textContent = S.pick<0 ? "先選一個題目" : (S.players%2===0 ? "開始，翻到第一頁畫畫" : "開始，翻到題目頁");
+}
+function renderSetup(){
+  renderCount();
+  $("owner").value=S.owner;
+  makeChips($("diffChips"), DIFFS, ()=>S.diff, v=>{S.diff=v; newCard();});
+  makeChips($("catChips"), CATS.map(c=>[c,c]), ()=>S.cat, v=>{S.cat=v; newCard();});
+  makeChips($("timeChips"), TIMES, ()=>S.time, v=>{S.time=v;});
+  if(!S.card.length) newCard(); else renderCard();
+}
+$("minus").onclick=()=>{ S.players=Math.max(3,S.players-1); renderCount(); renderCard(); save(); };
+$("plus").onclick=()=>{ S.players=Math.min(12,S.players+1); renderCount(); renderCard(); save(); };
+$("owner").oninput=e=>{ S.owner=e.target.value.trim(); save(); };
+$("newCardBtn").onclick=newCard;
+$("rollBtn").onclick=()=>{
+  const d=$("die"); d.classList.remove("roll"); void d.offsetWidth; d.classList.add("roll");
+  let n=0; const t=setInterval(()=>{ S.pick=Math.floor(Math.random()*S.card.length); renderCard(); if(++n>=7){clearInterval(t); save();} },70);
+};
+$("startBtn").onclick=()=>{
+  S.word=S.card[S.pick];
+  S.pages=pageTypes(S.players).map(t=>({type:t, data: t==="title"?S.word:null}));
+  S.cur=0; S.draft=null; S.rv=0;
+  openPage(); requestWake();
+};
+
+/* ---------- screens ---------- */
+function show(name){
+  ["sSetup","sPass","sPage","sReveal"].forEach(id=>{ $(id).hidden = id!==name; });
+  const el=$(name); el.classList.remove("flip"); void el.offsetWidth; el.classList.add("flip");
+}
+function ownerName(){ return S.owner || "本子主人"; }
+
+function openPass(){
+  S.screen="pass"; save();
+  const n=S.pages.length, next=S.cur;
+  $("passDots").innerHTML = S.pages.map((p,i)=>`<i class="${i<next?'done':(i===next?'now':'')}">${i+1}</i>`).join("");
+  if(next>=n){
+    $("passTitle").textContent="這本傳完了！";
+    $("passText").innerHTML=`請把平板交還給 <b></b>，大家一起翻開看看題目變成什麼。`;
+    $("passText").querySelector("b").textContent=ownerName();
+    $("passBtn").textContent="打開大公開";
+  }else{
+    const t=S.pages[next].type;
+    $("passTitle").textContent = t==="draw" ? "下一頁：畫畫" : "下一頁：猜答案";
+    $("passText").innerHTML = `請把平板傳給左手邊的下一位玩家。<br><span class="big-hand">第 ${next+1} 位玩家，${t==="draw"?"看題目把它畫出來":"看圖寫下答案"}</span>`;
+    $("passBtn").textContent="我準備好了，翻開";
+  }
+  show("sPass");
+}
+$("passBtn").onclick=()=>{ if(S.cur>=S.pages.length) openReveal(); else { S.startedAt=0; openPage(); } };
+
+function openPage(){
+  S.screen="page";
+  const p=S.pages[S.cur], n=S.pages.length;
+  if(!S.startedAt) S.startedAt=Date.now();
+  $("pgNum").textContent=`第 ${S.cur+1} / ${n} 頁`;
+  $("pgType").textContent = {title:"題目",draw:"畫畫",guess:"寫答案"}[p.type];
+  $("drawBody").hidden = p.type!=="draw";
+  $("guessBody").hidden = p.type!=="guess";
+  $("titleBody").hidden = p.type!=="title";
+  const pr=$("prompt"); pr.innerHTML="";
+  if(p.type==="draw"){
+    const src = S.cur===0 ? S.word : S.pages[S.cur-1].data;
+    pr.innerHTML = `${S.cur===0?"你的題目":"請畫出"}：<span class="hl"></span>`;
+    pr.querySelector(".hl").textContent=src;
+    strokes = (S.draft && S.draft.page===S.cur) ? S.draft.strokes : [];
+    eraser=false; $("eraserBtn").setAttribute("aria-pressed","false");
+    $("footHint").textContent="不能寫字或數字喔，只能畫圖。";
+    $("doneBtn").textContent = S.cur===n-1 ? "完成，交還本子" : "畫好了，翻頁";
+  }else if(p.type==="guess"){
+    pr.textContent="上一位畫了什麼？";
+    $("prevImg").src = S.pages[S.cur-1].data;
+    $("guessInput").value = (S.draft && S.draft.page===S.cur) ? S.draft.text : "";
+    $("footHint").textContent="";
+    $("doneBtn").textContent = S.cur===n-1 ? "寫好了，交還本子" : "寫好了，翻頁";
+  }else{
+    $("titleWord").textContent=S.word;
+    $("footHint").textContent="";
+    $("doneBtn").textContent="翻頁，傳給下一位";
+  }
+  show("sPage");
+  if(p.type==="draw") requestAnimationFrame(()=>{ fitCanvas(); redraw(); });
+  if(p.type==="guess") setTimeout(()=>$("guessInput").focus(),300);
+  updateDone(); save();
+}
+function updateDone(){
+  const p=S.pages[S.cur]; if(!p) return;
+  $("doneBtn").disabled = p.type==="guess" && !$("guessInput").value.trim();
+}
+$("guessInput").oninput=()=>{ S.draft={page:S.cur,text:$("guessInput").value}; updateDone(); save(); };
+$("guessInput").onkeydown=e=>{ if(e.key==="Enter" && !e.isComposing && $("guessInput").value.trim()) $("doneBtn").click(); };
+$("doneBtn").onclick=()=>{
+  const p=S.pages[S.cur];
+  if(p.type==="draw") p.data=cv.toDataURL("image/jpeg",0.82);
+  if(p.type==="guess") p.data=$("guessInput").value.trim();
+  $("guessInput").blur();
+  S.cur++; S.draft=null; S.startedAt=0; strokes=[];
+  openPass();
+};
+
+/* ---------- timer ---------- */
+setInterval(()=>{
+  const el=$("timer");
+  if(S.screen!=="page" || !S.time || S.pages[S.cur]?.type==="title"){ el.textContent=""; return; }
+  const left=Math.ceil(S.time - (Date.now()-S.startedAt)/1000);
+  el.classList.toggle("warn", left<=10 && left>0); el.classList.toggle("over", left<=0);
+  if(left<=0){ el.textContent="時間到！"; return; }
+  el.textContent=`${Math.floor(left/60)}:${String(left%60).padStart(2,"0")}`;
+},250);
+
+/* ---------- canvas ---------- */
+const cv=$("cv"), ctx=cv.getContext("2d");
+let strokes=[], live=null, activeId=null, penSeen=false, color=COLORS[0], size=SIZES[1], eraser=false;
+function fitCanvas(){
+  const w=$("boardWrap"); const W=w.clientWidth, H=w.clientHeight; if(!W||!H) return;
+  const s=Math.min(W/4,H/3); cv.style.width=Math.floor(s*4)+"px"; cv.style.height=Math.floor(s*3)+"px";
+}
+new ResizeObserver(fitCanvas).observe($("boardWrap"));
+function paintStroke(s){
+  ctx.lineCap="round"; ctx.lineJoin="round"; ctx.strokeStyle=s.e?"#ffffff":s.c; ctx.fillStyle=ctx.strokeStyle; ctx.lineWidth=s.w;
+  const p=s.p;
+  if(p.length===1){ ctx.beginPath(); ctx.arc(p[0][0],p[0][1],s.w/2,0,Math.PI*2); ctx.fill(); return; }
+  ctx.beginPath(); ctx.moveTo(p[0][0],p[0][1]);
+  for(let i=1;i<p.length-1;i++){ const mx=(p[i][0]+p[i+1][0])/2, my=(p[i][1]+p[i+1][1])/2; ctx.quadraticCurveTo(p[i][0],p[i][1],mx,my); }
+  const l=p[p.length-1]; ctx.lineTo(l[0],l[1]); ctx.stroke();
+}
+function redraw(){ ctx.fillStyle="#ffffff"; ctx.fillRect(0,0,cv.width,cv.height); strokes.forEach(paintStroke); }
+function pt(e){ const r=cv.getBoundingClientRect(); return [Math.round((e.clientX-r.left)*cv.width/r.width), Math.round((e.clientY-r.top)*cv.height/r.height)]; }
+cv.addEventListener("pointerdown",e=>{
+  if(e.pointerType==="pen") penSeen=true;
+  if(penSeen && e.pointerType==="touch") return;
+  if(activeId!==null) return;
+  activeId=e.pointerId; cv.setPointerCapture(e.pointerId);
+  live={c:color,w:eraser?size*2.2:size,e:eraser,p:[pt(e)]}; paintStroke(live);
+  e.preventDefault();
+});
+cv.addEventListener("pointermove",e=>{
+  if(e.pointerId!==activeId||!live) return;
+  const evs=e.getCoalescedEvents?e.getCoalescedEvents():[e];
+  for(const ev of evs){
+    const q=pt(ev), last=live.p[live.p.length-1];
+    if(Math.abs(q[0]-last[0])+Math.abs(q[1]-last[1])<2) continue;
+    ctx.lineCap="round"; ctx.strokeStyle=live.e?"#ffffff":live.c; ctx.lineWidth=live.w;
+    ctx.beginPath(); ctx.moveTo(last[0],last[1]); ctx.lineTo(q[0],q[1]); ctx.stroke();
+    live.p.push(q);
+  }
+});
+function endStroke(e){
+  if(e.pointerId!==activeId) return; activeId=null;
+  if(live){ strokes.push(live); live=null; redraw(); S.draft={page:S.cur,strokes}; save(); }
+}
+cv.addEventListener("pointerup",endStroke); cv.addEventListener("pointercancel",endStroke);
+
+(function tools(){
+  const sw=$("swatches");
+  COLORS.forEach((c,i)=>{ const b=document.createElement("button"); b.className="sw"; b.style.background=c; b.setAttribute("aria-label","顏色 "+(i+1)); b.setAttribute("aria-pressed",String(i===0));
+    b.onclick=()=>{ color=c; eraser=false; $("eraserBtn").setAttribute("aria-pressed","false"); [...sw.children].forEach(x=>x.setAttribute("aria-pressed","false")); b.setAttribute("aria-pressed","true"); };
+    sw.appendChild(b); });
+  const sz=$("sizes");
+  SIZES.forEach((s,i)=>{ const b=document.createElement("button"); b.className="sz"; b.setAttribute("aria-label","筆刷粗細 "+(i+1)); b.setAttribute("aria-pressed",String(s===size));
+    const d=Math.max(4,Math.round(s*0.7)); b.innerHTML=`<i style="width:${d}px;height:${d}px"></i>`;
+    b.onclick=()=>{ size=s; [...sz.children].forEach(x=>x.setAttribute("aria-pressed","false")); b.setAttribute("aria-pressed","true"); };
+    sz.appendChild(b); });
+})();
+$("eraserBtn").onclick=()=>{ eraser=!eraser; $("eraserBtn").setAttribute("aria-pressed",String(eraser)); };
+$("undoBtn").onclick=()=>{ strokes.pop(); redraw(); S.draft={page:S.cur,strokes}; save(); };
+let clearArm=null;
+$("clearBtn").onclick=()=>{
+  const b=$("clearBtn");
+  if(!clearArm){ b.textContent="再按一次清除"; clearArm=setTimeout(()=>{ b.textContent="清除"; clearArm=null; },2500); return; }
+  clearTimeout(clearArm); clearArm=null; b.textContent="清除"; strokes=[]; redraw(); S.draft={page:S.cur,strokes}; save();
+};
+
+/* ---------- reveal ---------- */
+function slides(){
+  const out=[{kind:"word",who:"一開始的題目",v:S.word}];
+  S.pages.forEach((p,i)=>{ if(p.type==="title") return;
+    out.push({kind:p.type==="draw"?"img":"word", who:`第 ${i+1} 頁 · 第 ${i+1} 位玩家${p.type==="draw"?"畫的":"猜的"}`, v:p.data}); });
+  const last=S.pages[S.pages.length-1];
+  out.push({kind:"chain",who:"結果",v:[S.word,last.type==="guess"?last.data:"（最後一張是圖）"]});
+  return out;
+}
+function openReveal(){ S.screen="reveal"; S.rv=0; $("rvTitle").textContent=`大公開 · ${S.owner?S.owner+"的本子":"這本畫本"}`; show("sReveal"); renderSlide(); save(); }
+function renderSlide(){
+  const list=slides(); S.rv=Math.max(0,Math.min(S.rv,list.length-1)); const s=list[S.rv];
+  $("rvCount").textContent=`${S.rv+1} / ${list.length}`;
+  const el=$("slide"); el.innerHTML=`<div class="who"></div>`; el.firstChild.textContent=s.who;
+  if(s.kind==="img"){ const im=new Image(); im.src=s.v; im.alt="玩家畫的圖"; el.appendChild(im); }
+  else if(s.kind==="word"){ const d=document.createElement("div"); d.className="txt"; d.textContent=s.v; el.appendChild(d); }
+  else{
+    const same = s.v[0].replace(/\s/g,"")===String(s.v[1]).replace(/\s/g,"");
+    el.innerHTML += `<div class="chain"><span class="a"></span><em>→ 傳了 ${S.pages.length} 頁 →</em><span class="hl b"></span></div><p class="hint" style="font-size:18px">${same?"完全沒走鐘，太神了！":"題目一路走鐘了，再翻回去看看哪一頁開始歪掉。"}</p>`;
+    el.querySelector(".a").textContent=s.v[0]; el.querySelector(".b").textContent=s.v[1];
+  }
+  $("prevBtn").disabled=S.rv===0; $("nextBtn").disabled=S.rv===list.length-1;
+  const st=$("strip"); st.innerHTML="";
+  list.forEach((x,i)=>{ const b=document.createElement("button"); b.setAttribute("aria-label",x.who); b.setAttribute("aria-current",String(i===S.rv));
+    if(x.kind==="img") b.innerHTML=`<img src="${x.v}" alt="">`; else b.textContent = x.kind==="chain"?"結果":String(x.v).slice(0,4);
+    b.onclick=()=>{ S.rv=i; renderSlide(); save(); }; st.appendChild(b); });
+  const cur=st.children[S.rv]; if(cur) cur.scrollIntoView({block:"nearest",inline:"center"});
+}
+$("prevBtn").onclick=()=>{ S.rv--; renderSlide(); save(); };
+$("nextBtn").onclick=()=>{ S.rv++; renderSlide(); save(); };
+document.addEventListener("keydown",e=>{ if(S.screen!=="reveal") return; if(e.key==="ArrowRight"){S.rv++;renderSlide();} if(e.key==="ArrowLeft"){S.rv--;renderSlide();} });
+(function swipe(){ let x0=null; const el=$("slide");
+  el.addEventListener("pointerdown",e=>{x0=e.clientX;}); el.addEventListener("pointerup",e=>{ if(x0===null) return; const dx=e.clientX-x0; x0=null;
+    if(Math.abs(dx)>60){ S.rv+= dx<0?1:-1; renderSlide(); save(); } }); })();
+$("againBtn").onclick=()=>{ S.screen="setup"; S.pages=[]; newCard(); renderSetup(); $("resumeBar").hidden=true; show("sSetup"); save(); };
+$("homeBtn").onclick=$("againBtn").onclick;
+
+/* ---------- wake lock ---------- */
+async function requestWake(){ try{ if(navigator.wakeLock) await navigator.wakeLock.request("screen"); }catch(e){} }
+document.addEventListener("visibilitychange",()=>{ if(document.visibilityState==="visible" && S.screen!=="setup") requestWake(); });
+
+/* ---------- boot ---------- */
+(function boot(){
+  const saved=load();
+  if(saved){ S=Object.assign(S,saved); }
+  const inGame = saved && saved.screen!=="setup" && saved.pages && saved.pages.length;
+  S.screen="setup"; renderSetup(); show("sSetup");
+  if(inGame){
+    $("resumeBar").hidden=false;
+    $("resumeBtn").onclick=()=>{ $("resumeBar").hidden=true;
+      if(saved.screen==="reveal") openReveal(); else if(saved.screen==="pass") openPass(); else openPage(); };
+  }
+})();
+</script>
+</body>
+</html>
