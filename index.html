@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>draw-pass-guess</title>
+<title>DRAW-PASS-GUESS</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -19,6 +19,9 @@
   color-scheme:light;
 }
 *{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0}
+img{max-width:100%}
 html,body{height:100%}
 body{
   background:var(--cover); color:var(--ink); font-family:var(--body); font-size:16px;
@@ -178,7 +181,7 @@ canvas{display:block;background:#fff;border:2px solid var(--line);border-radius:
           <button class="ghost" id="resumeBtn">繼續那一本</button>
         </div>
         <header class="setup-head">
-          <h1>draw-pass-guess</h1>
+          <h1>DRAW-PASS-GUESS</h1>
           <p>這台平板就是一本畫本：抽題目、畫畫、猜答案，一頁一頁傳下去。</p>
           <button class="qr" id="qrBtn" aria-label="放大這個頁面的 QR Code"><div id="qrSmall"></div><span>掃描開啟</span></button>
         </header>
