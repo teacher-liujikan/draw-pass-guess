@@ -66,6 +66,51 @@ h1,h2,.hand{font-family:var(--hand);text-wrap:balance}
 .setup-head p{margin:0;color:var(--muted);flex:1;min-width:12em}
 .qr{margin-left:auto;align-self:flex-start;display:flex;flex-direction:column;align-items:center;gap:4px;border:2px solid var(--ink);background:#fff;border-radius:10px;padding:6px 6px 4px;font-size:12px;color:var(--muted)}
 .qr canvas,.qr img{width:76px!important;height:76px!important;border:none;border-radius:0;display:block}
+.teach-btn{margin-top:10px;border:2px dashed var(--cover);color:var(--cover);background:var(--paper);border-radius:10px;padding:9px 14px;min-height:44px;font-size:15px;font-weight:500}
+.chip.fz{border-color:#c9a400;background:var(--soft)}
+.chip.fz[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+.chip.mine{border-color:var(--cover);color:var(--cover)}
+.chip.mine[aria-pressed="true"]{background:var(--cover);color:#fff}
+.diff-off{opacity:.4;pointer-events:none}
+.panel-over{position:fixed;inset:0;z-index:20;background:rgba(18,26,56,.6);display:flex;align-items:center;justify-content:center;padding:16px}
+.panel{background:var(--paper);border:2px solid var(--ink);border-radius:16px;box-shadow:8px 8px 0 var(--marker);width:min(820px,100%);max-height:100%;overflow:auto;padding:24px;display:flex;flex-direction:column;gap:16px}
+.panel h2{margin:0;font-size:30px}
+.panel p{margin:0;color:var(--muted);line-height:1.6;font-size:15px}
+.panel input,.panel textarea{width:100%;border:2px solid var(--line);border-radius:10px;padding:10px 12px;font-size:18px;background:#fff;font-family:var(--hand)}
+.panel textarea{min-height:150px;resize:vertical;line-height:1.6}
+.panel input:focus,.panel textarea:focus{outline:none;border-color:var(--cover)}
+.panel-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.panel-row .grow{flex:1}
+.wcount{font-size:14px;color:var(--muted);font-variant-numeric:tabular-nums}
+.share{display:grid;grid-template-columns:auto 1fr;gap:18px;align-items:center;border-top:2px dashed var(--line);padding-top:16px}
+.share-qr{background:#fff;padding:8px;border:2px solid var(--ink);border-radius:10px}
+.share-qr canvas,.share-qr img{width:150px!important;height:150px!important;display:block;border:none;border-radius:0}
+.share code{display:block;font-size:12px;word-break:break-all;color:var(--muted);max-height:4.5em;overflow:auto;margin:6px 0 10px}
+.share b{font-size:17px}
+@media (max-width:560px){.share{grid-template-columns:1fr}}
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 18px;border-radius:999px;z-index:30;font-size:15px}
+.ask-over{position:fixed;inset:0;z-index:40;background:rgba(18,26,56,.72);display:flex;align-items:center;justify-content:center;padding:16px;padding-top:max(16px,env(safe-area-inset-top,0px))}
+.ask{background:var(--paper);border:3px solid var(--ink);border-radius:28px;width:min(640px,100%);max-height:100%;overflow:auto;padding:30px 28px 28px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:16px;box-shadow:0 10px 0 var(--ink);animation:pop .45s cubic-bezier(.3,1.6,.5,1)}
+@keyframes pop{from{transform:scale(.6);opacity:0}to{transform:none;opacity:1}}
+.ask .tag{font-size:14px;letter-spacing:.2em;color:var(--cover);font-weight:700}
+.ask h2{margin:0;font-size:clamp(28px,5vw,40px);line-height:1.3}
+.ask p{margin:0;font-size:19px;line-height:1.7;color:var(--muted)}
+.ask p b{color:var(--ink)}
+.ask-ill{width:180px;height:140px}
+.ask-ill{display:grid;place-items:center}.ask-ill .wig{animation:wig 1.6s ease-in-out infinite}
+@keyframes wig{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+.ask-btns{display:flex;gap:18px;width:100%;margin-top:6px}
+.ask-btns button{flex:1;min-height:92px;border-radius:999px;border:3px solid var(--ink);font-size:32px;font-weight:900;box-shadow:0 6px 0 var(--ink);font-family:var(--body)}
+.ask-btns button:active{transform:translateY(4px);box-shadow:0 2px 0 var(--ink)}
+.ask-yes{background:var(--marker)}
+.ask-no{background:#cfe0ff}
+.ask-btns small{display:block;font-size:14px;font-weight:500;margin-top:2px}
+.ask-skip{border:none;background:none;color:var(--muted);text-decoration:underline;font-size:16px;min-height:44px}
+.point{position:fixed;z-index:41;top:calc(10px + env(safe-area-inset-top,0px));right:calc(14px + env(safe-area-inset-right,0px));display:flex;flex-direction:column;align-items:flex-end;pointer-events:none}
+.point svg{width:110px;height:110px;animation:bob .8s ease-in-out infinite}
+.point span{background:var(--marker);border:3px solid var(--ink);border-radius:12px;padding:6px 12px;font-weight:900;font-size:18px;margin-top:-6px}
+@keyframes bob{0%,100%{transform:translate(0,0)}50%{transform:translate(8px,-10px)}}
+@media (prefers-reduced-motion:reduce){.ask,.point svg,.ask-ill .wig{animation:none}}
 .qr-over{position:fixed;inset:0;z-index:20;background:rgba(18,26,56,.82);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:24px;text-align:center;color:#fff}
 .qr-big{background:#fff;padding:18px;border-radius:16px}
 .qr-big canvas,.qr-big img{width:min(70vw,60vh,360px)!important;height:auto!important;aspect-ratio:1;display:block;border:none;border-radius:0}
@@ -202,8 +247,9 @@ canvas{display:block;background:#fff;border:2px solid var(--line);border-radius:
               <label class="label" for="owner">本子主人</label>
               <input id="owner" maxlength="12" placeholder="你的名字（可不填）" autocomplete="off">
             </div>
-            <div><span class="label">難度</span><div class="chips" id="diffChips"></div></div>
-            <div><span class="label">種類</span><div class="chips" id="catChips"></div></div>
+            <div id="diffBox"><span class="label">難度</span><div class="chips" id="diffChips"></div></div>
+            <div><span class="label">種類</span><div class="chips" id="catChips"></div>
+              <button class="teach-btn" id="teachBtn">✎ 老師自訂詞語</button></div>
             <div><span class="label">每頁時間</span><div class="chips" id="timeChips"></div></div>
           </div>
           <div class="col">
@@ -285,9 +331,62 @@ canvas{display:block;background:#fff;border:2px solid var(--line);border-radius:
   </div>
 </div>
 
+<div class="panel-over" id="panelOver" hidden>
+  <div class="panel" role="dialog" aria-labelledby="panelTitle">
+    <h2 id="panelTitle">老師自訂詞語</h2>
+    <p>貼上這一課的語詞，可以用頓號、逗號、空格或換行隔開。存好後，用下面的連結或 QR Code 分享給學生，學生打開就會直接用這些詞語抽題。</p>
+    <div>
+      <label class="label" for="listName">詞語表名稱</label>
+      <input id="listName" maxlength="16" placeholder="例如：第三課語詞" autocomplete="off">
+    </div>
+    <div>
+      <label class="label" for="listWords">語詞</label>
+      <textarea id="listWords" placeholder="例如：&#10;搖搖晃晃、熱氣騰騰、狼吞虎嚥&#10;氣喘吁吁、手舞足蹈"></textarea>
+      <div class="panel-row" style="margin-top:6px"><span class="wcount" id="wcount">0 個語詞</span></div>
+    </div>
+    <div class="panel-row">
+      <button class="primary" id="saveList">儲存並使用</button>
+      <button class="ghost" id="clearList">刪除自訂詞語</button>
+      <span class="grow"></span>
+      <button class="ghost" id="closePanel">關閉</button>
+    </div>
+    <div class="share" id="shareBox" hidden>
+      <div class="share-qr" id="shareQr"></div>
+      <div>
+        <b>分享給學生</b>
+        <code id="shareUrl"></code>
+        <button class="ghost" id="copyLink">複製連結</button>
+        <p style="margin-top:8px">右上角的 QR Code 也會帶著這份詞語表，學生掃描後就能直接玩。</p>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast" hidden></div>
+
+<div class="ask-over" id="askOver" hidden>
+  <div class="ask" id="askStep1" role="dialog" aria-labelledby="askT1">
+    <span class="tag">開始前先檢查</span>
+    <div class="ask-ill"><div class="wig"><svg style="width:140px;height:140px" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="40" fill="#fff" stroke="#007aff" stroke-width="6"/><g transform="rotate(45 50 50)"><path d="M50 22 L59 50 L41 50 Z" fill="#007aff"/><path d="M50 78 L59 50 L41 50 Z" fill="#fff" stroke="#007aff" stroke-width="4" stroke-linejoin="round"/></g><circle cx="50" cy="50" r="3.5" fill="#fff"/></svg></div></div>
+    <h2 id="askT1">畫面<span class="hl">右上角</span>，<br>有沒有這個指北針？</h2>
+    <p>看看平板最上面的右邊角落</p>
+    <div class="ask-btns">
+      <button class="ask-yes" id="askYes">有<small>我有看到</small></button>
+      <button class="ask-no" id="askNo">沒有<small>開始玩</small></button>
+    </div>
+  </div>
+  <div class="ask" id="askStep2" role="dialog" aria-labelledby="askT2" hidden>
+    <span class="tag">請先做這一步</span>
+    <h2 id="askT2">先按右上角的<br><span class="hl">指北針</span></h2>
+    <p>按下去之後，畫本會用 <b>Safari</b> 重新打開，<br>畫畫更順，進度也不會不見。</p>
+    <p>打開後再按一次「沒有」就可以開始玩囉！</p>
+    <button class="ask-skip" id="askSkip">找不到指北針，先直接玩</button>
+  </div>
+</div>
+<div class="point" id="askPoint" hidden><svg viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="40" fill="#fff" stroke="#007aff" stroke-width="6"/><g transform="rotate(45 50 50)"><path d="M50 22 L59 50 L41 50 Z" fill="#007aff"/><path d="M50 78 L59 50 L41 50 Z" fill="#fff" stroke="#007aff" stroke-width="4" stroke-linejoin="round"/></g><circle cx="50" cy="50" r="3.5" fill="#fff"/></svg><span>按這裡 ↑</span></div>
+
 <div class="qr-over" id="qrOver" hidden>
   <div class="qr-big" id="qrBig"></div>
-  <p>其他玩家用手機或平板掃描，就能打開自己的畫本</p>
+  <p id="qrHint">其他玩家用手機或平板掃描，就能打開自己的畫本</p>
   <code id="qrUrl"></code>
   <button class="ghost" id="qrClose">關閉</button>
 </div>
@@ -328,7 +427,24 @@ const WORDS = {
     normal:["雞飛狗跳","亡羊補牢","杯弓蛇影","掩耳盜鈴","打草驚蛇","如魚得水","盲人摸象","對症下藥"],
     hard:["熱鍋上的螞蟻","竹籃打水一場空","臨時抱佛腳","三人成虎","望梅止渴","半斤八兩","雪中送炭","騎虎難下"]}
 };
+const FUZHU = {
+  "扶助・低年級":{
+    easy:["太陽","月亮","星星","下雨","花朵","大樹","房子","書包","鉛筆","雨傘","眼睛","牙齒","小鳥","小魚","氣球","蘋果"],
+    normal:["刷牙","洗手","上學","排隊","跳繩","拍球","唱歌","睡覺","吃飯","拍手","跑步","洗澡","看書","寫字"],
+    hard:["開心","生氣","害怕","難過","肚子餓","口渴","好冷","好熱","很高","很矮"]},
+  "扶助・中年級":{
+    easy:["彩虹","閃電","雪人","風箏","腳踏車","溜滑梯","蝴蝶","螞蟻","毛毛蟲","蜘蛛網","廚房","教室"],
+    normal:["跌倒","爬樹","澆花","掃地","捉迷藏","拔河","餵魚","打噴嚏","搖搖晃晃","蹦蹦跳跳","亮晶晶","胖嘟嘟"],
+    hard:["東張西望","手舞足蹈","狼吞虎嚥","哈哈大笑","氣喘吁吁","滿頭大汗","目瞪口呆","垂頭喪氣","七上八下","自言自語"]},
+  "扶助・高年級":{
+    easy:["地球","火山","瀑布","沙漠","望遠鏡","顯微鏡","燈塔","博物館","運動會","颱風"],
+    normal:["熱氣騰騰","人山人海","張燈結彩","一望無際","亂七八糟","五顏六色","眉開眼笑","面紅耳赤","汗流浹背","鴉雀無聲"],
+    hard:["拔苗助長","一箭雙鵰","雞同鴨講","坐井觀天","虎頭蛇尾","三心二意","半途而廢","交頭接耳","千鈞一髮","大海撈針"]}
+};
+const FUN_CATS = Object.keys(WORDS);
+Object.assign(WORDS, FUZHU);
 const CATS = ["隨機", ...Object.keys(WORDS)];
+const MINE = "__mine";
 const DIFFS = [["easy","簡單"],["normal","普通"],["hard","困難"],["mix","混合"]];
 const TIMES = [[0,"不限時"],[60,"60 秒"],[90,"90 秒"],[120,"120 秒"]];
 const COLORS = ["#1b2130","#d9443a","#2a6fdb","#2f9e57","#f08a24","#8a5a3c","#e85d9e"];
@@ -338,7 +454,7 @@ const KEY = "draw-pass-guess-v1";
 const $ = id => document.getElementById(id);
 let S = {
   screen:"setup", players:6, owner:"", diff:"normal", cat:"隨機", time:0,
-  card:[], pick:-1, word:"", pages:[], cur:0, startedAt:0, draft:null, rv:0
+  card:[], pick:-1, word:"", pages:[], cur:0, startedAt:0, draft:null, rv:0, custom:null
 };
 
 function load(){ try{ const raw = localStorage.getItem(KEY); if(raw) return JSON.parse(raw);}catch(e){} return null; }
@@ -374,7 +490,8 @@ function renderCount(){
   $("orderPreview").innerHTML = pageTypes(n).map((t,i)=>`<i class="${t==='draw'?'d':''}">${i+1} ${lab[t]}</i>`).join("");
 }
 function pool(){
-  const cats = S.cat==="隨機"?Object.keys(WORDS):[S.cat];
+  if(S.cat===MINE && S.custom && S.custom.words.length) return S.custom.words.slice();
+  const cats = S.cat==="隨機"?FUN_CATS:[S.cat];
   const diffs = S.diff==="mix"?["easy","normal","hard"]:[S.diff];
   const out=[]; cats.forEach(c=>diffs.forEach(d=>WORDS[c][d].forEach(w=>{ if(!out.includes(w)) out.push(w); })));
   return out;
@@ -385,7 +502,8 @@ function newCard(){
 }
 function renderCard(){
   const dl = DIFFS.find(d=>d[0]===S.diff)[1];
-  $("cardMeta").textContent = `${S.cat} · ${dl}`;
+  $("cardMeta").textContent = S.cat===MINE && S.custom ? `${S.custom.name} · 共 ${S.custom.words.length} 個` : `${S.cat} · ${dl}`;
+  $("diffBox").classList.toggle("diff-off", S.cat===MINE);
   const ol=$("words"); ol.innerHTML="";
   S.card.forEach((w,i)=>{
     const li=document.createElement("li"); const b=document.createElement("button");
@@ -401,7 +519,13 @@ function renderSetup(){
   renderCount();
   $("owner").value=S.owner;
   makeChips($("diffChips"), DIFFS, ()=>S.diff, v=>{S.diff=v; newCard();});
-  makeChips($("catChips"), CATS.map(c=>[c,c]), ()=>S.cat, v=>{S.cat=v; newCard();});
+  if(S.cat===MINE && !(S.custom && S.custom.words.length)) S.cat="隨機";
+  const cats = CATS.map(c=>[c,c]);
+  if(S.custom && S.custom.words.length) cats.unshift([MINE,"★ "+S.custom.name]);
+  makeChips($("catChips"), cats, ()=>S.cat, v=>{S.cat=v; newCard(); renderCard();});
+  const mineChip=[...$("catChips").children].find(b=>b.textContent.startsWith("★ "));
+  if(mineChip) mineChip.classList.add("mine");
+  [...$("catChips").children].forEach(b=>{ if(b.textContent.startsWith("扶助")) b.classList.add("fz"); });
   makeChips($("timeChips"), TIMES, ()=>S.time, v=>{S.time=v;});
   if(!S.card.length) newCard(); else renderCard();
 }
@@ -609,25 +733,100 @@ $("homeBtn").onclick=$("againBtn").onclick;
 async function requestWake(){ try{ if(navigator.wakeLock) await navigator.wakeLock.request("screen"); }catch(e){} }
 document.addEventListener("visibilitychange",()=>{ if(document.visibilityState==="visible" && S.screen!=="setup") requestWake(); });
 
+/* ---------- teacher word lists ---------- */
+function splitWords(t){
+  const out=[]; String(t||"").split(/[\s,，、;；/|。]+/).map(w=>w.trim()).filter(Boolean).forEach(w=>{ if(w.length<=20 && !out.includes(w)) out.push(w); });
+  return out.slice(0,200);
+}
+function baseUrl(){ return location.href.split("#")[0].split("?")[0]; }
+function shareUrl(){
+  if(!(S.custom && S.custom.words.length)) return baseUrl();
+  const q=new URLSearchParams(); q.set("list",S.custom.name); q.set("words",S.custom.words.join(","));
+  return baseUrl()+"?"+q.toString();
+}
+function toast(msg){ const t=$("toast"); t.textContent=msg; t.hidden=false; clearTimeout(toast.t); toast.t=setTimeout(()=>t.hidden=true,2200); }
+function qrInto(el,text,size){
+  el.innerHTML="";
+  if(typeof QRCode==="undefined") return false;
+  new QRCode(el,{text,width:size,height:size,colorDark:"#1b2130",colorLight:"#ffffff",
+    correctLevel: text.length>300 ? QRCode.CorrectLevel.L : QRCode.CorrectLevel.M});
+  return true;
+}
+function updateCount(){ $("wcount").textContent = splitWords($("listWords").value).length+" 個語詞"; }
+function renderShare(){
+  const on = !!(S.custom && S.custom.words.length);
+  $("shareBox").hidden=!on;
+  if(on){ const u=shareUrl(); let shown=u; try{ shown=decodeURI(u); }catch(e){} $("shareUrl").textContent=shown; $("shareQr").hidden=!qrInto($("shareQr"),u,300); }
+}
+$("teachBtn").onclick=()=>{
+  $("listName").value = S.custom ? S.custom.name : "";
+  $("listWords").value = S.custom ? S.custom.words.join("、") : "";
+  updateCount(); renderShare(); $("panelOver").hidden=false;
+};
+$("listWords").oninput=updateCount;
+$("closePanel").onclick=()=>{ $("panelOver").hidden=true; };
+$("panelOver").onclick=e=>{ if(e.target.id==="panelOver") $("panelOver").hidden=true; };
+$("saveList").onclick=()=>{
+  const words=splitWords($("listWords").value);
+  if(words.length<2){ toast("請至少輸入 2 個語詞"); return; }
+  S.custom={name:($("listName").value.trim()||"老師的詞語").slice(0,16), words};
+  S.cat=MINE; renderSetup(); newCard(); renderShare(); refreshQr(); save();
+  toast(`已儲存 ${words.length} 個語詞`);
+};
+$("clearList").onclick=()=>{
+  S.custom=null; if(S.cat===MINE) S.cat="隨機";
+  $("listName").value=""; $("listWords").value=""; updateCount();
+  renderSetup(); newCard(); renderShare(); refreshQr(); save();
+  try{ history.replaceState(null,"",baseUrl()); }catch(e){}
+  toast("已刪除自訂詞語");
+};
+$("copyLink").onclick=()=>{
+  const u=shareUrl();
+  const fallback=()=>{ const r=document.createRange(); r.selectNodeContents($("shareUrl")); const sel=getSelection(); sel.removeAllRanges(); sel.addRange(r); toast("已選取連結，請按複製"); };
+  try{ navigator.clipboard.writeText(u).then(()=>toast("連結已複製"),fallback); }catch(e){ fallback(); }
+};
+
 /* ---------- QR code ---------- */
-(function qr(){
-  const url = location.href.split("#")[0];
-  $("qrUrl").textContent = url;
-  if(typeof QRCode==="undefined"){ $("qrBtn").hidden=true; return; }
-  const opt = t => ({text:url,width:t,height:t,colorDark:"#1b2130",colorLight:"#ffffff",correctLevel:QRCode.CorrectLevel.M});
-  new QRCode($("qrSmall"), opt(256));
-  let big=false;
-  $("qrBtn").onclick=()=>{ if(!big){ new QRCode($("qrBig"), opt(720)); big=true; } $("qrOver").hidden=false; };
-  $("qrClose").onclick=()=>{ $("qrOver").hidden=true; };
-  $("qrOver").onclick=e=>{ if(e.target.id==="qrOver") $("qrOver").hidden=true; };
-})();
+let bigQrFor="";
+function refreshQr(){
+  const u=shareUrl();
+  $("qrUrl").textContent=u;
+  if(!qrInto($("qrSmall"),u,256)){ $("qrBtn").hidden=true; return; }
+  $("qrHint").textContent = S.custom && S.custom.words.length ? `掃描後會使用「${S.custom.name}」` : "其他玩家用手機或平板掃描，就能打開自己的畫本";
+}
+$("qrBtn").onclick=()=>{ const u=shareUrl(); if(bigQrFor!==u){ qrInto($("qrBig"),u,720); bigQrFor=u; } $("qrOver").hidden=false; };
+$("qrClose").onclick=()=>{ $("qrOver").hidden=true; };
+$("qrOver").onclick=e=>{ if(e.target.id==="qrOver") $("qrOver").hidden=true; };
+
+/* ---------- open-in-Safari check ---------- */
+function closeAsk(){ $("askOver").hidden=true; $("askPoint").hidden=true; try{ sessionStorage.setItem("dpg-asked","1"); }catch(e){} }
+$("askNo").onclick=closeAsk;
+$("askSkip").onclick=closeAsk;
+$("askYes").onclick=()=>{ $("askStep1").hidden=true; $("askStep2").hidden=false; $("askPoint").hidden=false; };
+function maybeAsk(){
+  let asked=false; try{ asked=sessionStorage.getItem("dpg-asked")==="1"; }catch(e){}
+  const touch = navigator.maxTouchPoints>0 || /iPad|iPhone|Android/i.test(navigator.userAgent);
+  let force=false; try{ force=new URLSearchParams(location.search).has("ask"); }catch(e){}
+  if(!force && (asked || !touch)) return;
+  $("askStep1").hidden=false; $("askStep2").hidden=true; $("askOver").hidden=false;
+}
 
 /* ---------- boot ---------- */
 (function boot(){
   const saved=load();
   if(saved){ S=Object.assign(S,saved); }
+  try{
+    const q=new URLSearchParams(location.search);
+    const w=splitWords(q.get("words"));
+    if(w.length>=2){
+      const name=(q.get("list")||"老師的詞語").slice(0,16);
+      const same = S.custom && S.custom.name===name && S.custom.words.join()===w.join();
+      S.custom={name,words:w};
+      if(!same){ S.cat=MINE; S.card=[]; }
+    }
+  }catch(e){}
   const inGame = saved && saved.screen!=="setup" && saved.pages && saved.pages.length;
-  S.screen="setup"; renderSetup(); show("sSetup");
+  S.screen="setup"; renderSetup(); show("sSetup"); refreshQr(); maybeAsk();
   if(inGame){
     $("resumeBar").hidden=false;
     $("resumeBtn").onclick=()=>{ $("resumeBar").hidden=true;
@@ -635,6 +834,5 @@ document.addEventListener("visibilitychange",()=>{ if(document.visibilityState==
   }
 })();
 </script>
-<script data-goatcounter="https://teacher-liujikan.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </body>
 </html>
